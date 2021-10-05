@@ -13,7 +13,7 @@
         android:gravity="center"
         android:background="@drawable/fragment_login_edittext_background"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="150dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"/>
     <EditText
@@ -52,4 +52,12 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="首先感谢xz454867105的贡献\nPython代码来自于https://github.com/xz454867105/fxxk_chaoxing\n我只是简单的对其进行整合"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:gravity="center"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

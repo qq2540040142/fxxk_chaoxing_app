@@ -6,11 +6,16 @@ from rich.console import Console
 from rich.progress import Progress
 from math import ceil
 import print as rprint
+import main
 from java import jclass
 
 console = Console()
 fragment = jclass("com.ysl.chaoxing.fragment.StartFragment")
 instance = None
+isUpdateProcess = False
+updateProcessView = None
+
+
 def show_status(speed, name, totalmin, totalsec, done, job_done, totaljob):
     """
     显示当前视频进度
@@ -24,17 +29,26 @@ def show_status(speed, name, totalmin, totalsec, done, job_done, totaljob):
     :return:
     """
     # print('开始任务{}'.format(name))
+    global isUpdateProcess
+    if isUpdateProcess is False:
+        global updateProcessView
+        updateProcessView = instance.addProgressBar("进度条")
+    isUpdateProcess = True
     wait_time = float((float(60) * float(1 / speed)) / 60)
     goal = done + 60
-    while done < goal:
+    while done < goal and main.isRunning:
         cont = int(done) / (int(totalmin) * 60 + int(totalsec))
         cont = round(cont, 2)
         cont = ceil(cont * 20)
         cont_detail = '*' * cont + '-' * (20 - cont)
         status = '{}秒/{}秒'.format(done, (int(totalmin) * 60 + int(totalsec)))
-        rprint.regulate_print('视频任务{}   [dodger_blue2]{}[/dodger_blue2]  [yellow2]{}[/yellow2]  总任务[bright_cyan]{}[/bright_cyan]/[bright_cyan]{}[/bright_cyan]'.format(name, cont_detail, status, job_done, totaljob))
+        #rprint.regulate_print('视频任务{}   [dodger_blue2]{}[/dodger_blue2]  [yellow2]{}[/yellow2]  总任务[bright_cyan]{}[/bright_cyan]/[bright_cyan]{}[/bright_cyan]'.format(name, cont_detail, status, job_done, totaljob))
+        #instance.addText('视频任务{}   {}  {}  总任务{}/{}'.format(name, cont_detail, status, job_done, totaljob))
+        instance.updateProgressBar(updateProcessView,'视频任务: {}\n{} {} 总任务{}/{}'.format(name, cont_detail, status, job_done, totaljob))
         time.sleep(wait_time)
         done += 1
+    if main.isRunning is False :
+        return
 
 def do_mp4(usernm,userId, course, session, mp4):
     """
@@ -79,7 +93,7 @@ def do_mp4(usernm,userId, course, session, mp4):
             retry_time = 1
             instance.addText("开始任务{}".format(str(mp4[item][0])))
 
-            while True:
+            while main.isRunning:
                 try:
                     t1 = time.time() * 1000
                     jsoncallback = 'jsonp0' + str(int(random.random() * 100000000000000000))
@@ -132,6 +146,7 @@ def do_mp4(usernm,userId, course, session, mp4):
                         rt = random.randint(1, 3)
                         job_done += 1
                         break
+
                     show_status(speed,mp4[item][0],mm,ss,playingtime,str(finished_num),str(len(mp4)))
                     playingtime += 60
                     retry_time = 1
@@ -144,6 +159,10 @@ def do_mp4(usernm,userId, course, session, mp4):
                         time.sleep(rt)
                     else:
                         instance.addText('重试超时，请检查您的[red]网络情况[/red]或检查此课程是否[red]已经结课[/red]')
+        if main.isRunning is False :
+            instance.addText("python已安全退出!")
+            main.set_running(True)
+            return
         instance.addText(
                 '当前任务完成，已完成{}/{}项任务,等待{}秒后开始下一任务'.format(str(finished_num), str(len(mp4)),rt))
         time.sleep(rt)

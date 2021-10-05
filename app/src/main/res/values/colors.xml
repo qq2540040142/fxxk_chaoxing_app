@@ -8,6 +8,7 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="themeColor">#F48FB1</color>
+    <color name="red">#FF0000</color>
 
     <!--coverActivity-->
     <color name="coverProseColor">#515151</color>

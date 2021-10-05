@@ -8,24 +8,29 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/teal_700"
-        android:orientation="vertical"
+        android:orientation="horizontal"
         android:paddingHorizontal="20dp"
         android:paddingTop="30dp"
         android:paddingBottom="10dp">
-
         <TextView
-
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="输出"
             android:textColor="@color/white"
             android:textSize="22sp" />
-    </LinearLayout>
 
+    </LinearLayout>
+    <Button
+        android:id="@+id/fragment_start_exit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="退出线程"
+        android:textSize="18sp"/>
     <ScrollView
         android:id="@+id/fragment_start_scrollview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_marginBottom="20dp">
         <LinearLayout
             android:id="@+id/fragment_start_canvas"
             android:layout_width="match_parent"
@@ -33,4 +38,5 @@
             android:orientation="vertical"
             android:paddingHorizontal="6dp" />
     </ScrollView>
+
 </LinearLayout>

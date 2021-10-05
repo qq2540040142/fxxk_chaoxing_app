@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.chaquo.python.PyObject;
 import com.chaquo.python.Python;
 import com.ysl.chaoxing.R;
+import com.ysl.chaoxing.activity.MainActivity;
 import com.ysl.chaoxing.adapter.AllSubjectRecyclerAdapter;
 import com.ysl.chaoxing.data.AllSubject;
 import com.ysl.chaoxing.databinding.FragmentMainBinding;
@@ -94,6 +95,7 @@ public class MainFragment extends Fragment {
      * @param nextFragment 要跳转的fragment
      */
     private void switchFragment(Fragment nextFragment) {
+        MainActivity.fragmentFlag++;
         FragmentTransaction transaction = requireActivity().getSupportFragmentManager()
                 .beginTransaction()
                 .setCustomAnimations(R.animator.switch_fragment_enter,

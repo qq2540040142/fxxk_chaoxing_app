@@ -7,6 +7,7 @@ import requests.utils
 from rich.console import Console
 from rich.table import Table
 import time
+import main
 
 
 console = Console()
@@ -107,6 +108,8 @@ def find_objectives(chapterids, course_id, session):
     """
     jobs = {}
     for lesson_id in chapterids:
+        if main.isRunning is False:
+            break
         url = 'http://mooc1-api.chaoxing.com/gas/knowledge?id=' + str(
             lesson_id) + '&courseid=' + str(
             course_id) + '&fields=begintime,clickcount,createtime,description,indexorder,jobUnfinishedCount,jobcount,' \
@@ -135,6 +138,8 @@ def find_objectives(chapterids, course_id, session):
             instance.addText('错误类型:{}'.format(e.__class__.__name__))
             instance.addText('错误明细:{}'.format(e))
         time.sleep(0.3)
+    if main.isRunning is False :
+        return
     return jobs
 
 
@@ -150,7 +155,11 @@ def detect_job_type(jobs, usernm, course_id):
     mp4 = {}
     ppt = {}
     for chapter in jobs:
+        if main.isRunning is False:
+            break
         for item in jobs[chapter]:
+            if main.isRunning is False:
+                break
             url = 'https://mooc1-api.chaoxing.com/ananas/status/' + item[0]
             header = {
                 'Host': 'mooc1-api.chaoxing.com',
@@ -171,6 +180,8 @@ def detect_job_type(jobs, usernm, course_id):
                 ppt[item[0]] = rtn['detail']
             else:
                 pass
+    if main.isRunning is False:
+        return
     instance.addText('共加载任务点{}个'.format(len(mp4) + len(ppt)))
     return mp4, ppt
 
