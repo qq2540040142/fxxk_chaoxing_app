@@ -79,7 +79,6 @@ public class MainActivity extends FragmentActivity {
             if (StartFragment.thread.isAlive()) {
                 StartFragment.thread.interrupt();
             }
-            getSupportFragmentManager().popBackStack();
         }
     }
 }

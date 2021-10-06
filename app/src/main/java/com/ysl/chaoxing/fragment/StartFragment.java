@@ -1,20 +1,26 @@
 package com.ysl.chaoxing.fragment;
 
+import static com.ysl.chaoxing.tools.Tools.getStatusBarByResId;
+
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
 import com.chaquo.python.PyException;
 import com.chaquo.python.PyObject;
 import com.chaquo.python.Python;
 import com.ysl.chaoxing.R;
+import com.ysl.chaoxing.activity.MainActivity;
 import com.ysl.chaoxing.databinding.FragmentStartBinding;
 import com.ysl.chaoxing.tools.Tools;
 
@@ -32,6 +38,7 @@ public class StartFragment extends Fragment {
     public PyObject session;
     public static StartFragment instance;
     public static Thread thread;
+    @SuppressLint("SimpleDateFormat")
     public SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
 
     public StartFragment(int position, PyObject session) {
@@ -45,11 +52,13 @@ public class StartFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentStartBinding.inflate(inflater, container, false);
         instance = (StartFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
-        addText("注:如需返回上个界面,请点击退出线程,直到看到'Python已安全退出!'则可以返回,否则会引发异常闪退",requireActivity().getColor(R.color.red));
+        addText("注:如需返回上个界面,请点击右上角退出,否则会引发异常闪退!", requireActivity().getColor(R.color.red));
         allListener();
+        setTabLayoutMarginTop();
         startThread();
         return binding.getRoot();
     }
+
 
     public void addText(String s) {
         TextView textView = new TextView(requireContext());
@@ -65,6 +74,9 @@ public class StartFragment extends Fragment {
                         @Override
                         public void run() {
                             binding.fragmentStartScrollview.fullScroll(ScrollView.FOCUS_DOWN);//滚动到底部
+                            if ("python已安全退出!".equals(s)){
+                                requireActivity().getSupportFragmentManager().popBackStack();
+                            }
                         }
                     });
 
@@ -73,7 +85,7 @@ public class StartFragment extends Fragment {
         });
     }
 
-    public void addText(String s,int color) {
+    public void addText(String s, int color) {
         TextView textView = new TextView(requireContext());
         textView.setText(s);
         textView.setTextSize(16);
@@ -97,7 +109,10 @@ public class StartFragment extends Fragment {
 
     /**
      * 添加一个进度条
-     * */
+     *
+     * @param s 进度条的内容
+     * @return 进度条的view
+     */
     public TextView addProgressBar(String s) {
         TextView textView = new TextView(requireContext());
         textView.setText(s);
@@ -116,10 +131,11 @@ public class StartFragment extends Fragment {
 
     /**
      * 更新进度条
+     *
      * @param textView 进度条的textview
-     * @param s 进度条
-     * */
-    public void updateProgressBar(TextView textView,String s){
+     * @param s        进度条
+     */
+    public void updateProgressBar(TextView textView, String s) {
         textView.post(new Runnable() {
             @Override
             public void run() {
@@ -160,10 +176,20 @@ public class StartFragment extends Fragment {
         binding.fragmentStartExit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                MainActivity.fragmentFlag--;
                 Python.getInstance().getModule("main")
                         .callAttr("set_running", false);
-
             }
         });
     }
+
+    /**
+     * 根据状态栏高度设置tabLayout的marginTop
+     */
+    private void setTabLayoutMarginTop() {
+        LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) binding.fragmentStartToolbar.getLayoutParams();
+        lp.topMargin = getStatusBarByResId(requireContext());
+        binding.fragmentStartToolbar.setLayoutParams(lp);
+    }
+
 }

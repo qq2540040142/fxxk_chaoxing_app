@@ -38,7 +38,6 @@ public class LoginFragment extends Fragment {
         //刚进页面获取一下本地是否有存储的密码
         getSaveUsernameAndPassword();
         login();
-
         return binding.getRoot();
     }
 
@@ -52,8 +51,8 @@ public class LoginFragment extends Fragment {
                 Python python = Python.getInstance();
                 PyObject pyObject = python.getModule("getUser")
                         .callAttr("login"
-                                ,binding.fragmentLoginNameEditText.getText().toString()
-                                ,binding.fragmentLoginPassWordfEditText.getText().toString());
+                                , Objects.requireNonNull(binding.fragmentLoginNameEditText.getText()).toString()
+                                , Objects.requireNonNull(binding.fragmentLoginPassWordfEditText.getText()).toString());
                 if (pyObject == null){
                     Tools.miuiToast(requireContext(),"登录失败,请检查你的账号密码是否正确");
                 }else{
